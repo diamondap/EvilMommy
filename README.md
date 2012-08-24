@@ -27,7 +27,7 @@ listening?
 ## Configuring ##
 
 Set your router URL, login name and password in EvilMommy/Config.py. You 
-should also set up entries for the machines you want Mommy to control
+should also set up entries for the machines you want Mommy to control.
 You can get the configuration information from your Linksys router's web 
 management console.
 
