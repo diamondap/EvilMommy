@@ -1,0 +1,49 @@
+<html>
+<head>
+  <title>Mommy's Feeling Evil!</title>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <style>
+	body { font-size: 18px;  }
+	h1 { font-size: 30px; }
+	select, input[type="submit"], input[type="text"], input[type="submit"] 
+	   { height: 40px; font-size: 18px; }
+	textarea { height: 120px; width: 90%; font-size: 14px;}
+  </style>
+  <script type="text/javascript">
+	$(document).ready(function() {
+	    var machines = {{ machines|safe }};
+
+	    function rebuildDeviceList(command) {
+            var device_opts = $('#device').prop('options');
+            while(device_opts.length > 0)
+                $(device_opts[0]).remove();
+	        for (var i=0; i < machines.length; i++) {
+				if (command == null || command == 'disconnect' ||
+				    command == 'reconnect' ||
+                    machines[i]['can_' + command] == true) {
+				    device_opts[i] = new Option(machines[i].friendly_name,
+				                                machines[i].hostname,
+                                                (i == 0),
+                                                (i == 0));
+			    }
+            }
+        }
+
+		$('#command').change(function() {
+            var cmd = $('#command').val();
+			rebuildDeviceList(cmd);
+			if (cmd == 'disconnect')
+	            $('#btnSubmit').attr('value', "Do my evil bidding!");
+			else if (cmd == 'reconnect')
+				$('#btnSubmit').attr('value', "Confer my blessing!");
+        });
+
+		$('#btnSubmit').click(function() {
+            $('#bePatient').show();
+        });
+
+        rebuildDeviceList(null);
+	});
+  </script>
+</head>

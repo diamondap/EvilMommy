@@ -1,0 +1,542 @@
+
+
+<!--
+//	Utopia_Init: SUCCEEDED (rc = 1)
+//	Utopia_GetDeviceSettings: SUCCEEDED (rc = 0)
+//		DEVICE SETTINGS:
+//		hostname = Rowder
+//		lang = en-US
+//		tz gmt offset = -5.000000
+//		auto_dst = 1
+//	Utopia_GetDeviceInfo: SUCCEEDED (rc = 0)
+//		DEVICE INFO:
+//		firmware version = 1.0.30
+//		firmware revision = 126544
+//		firmware build date = 2011-12-24 02:40
+//		model name = EA3500
+//		current time = Sat Aug 18 19:06:40 2012
+
+//		wan_mac_address = 58:62:44:a0:db:12
+//		wan_domainname = 
+//	Utopia_GetWifiMacFilters: SUCCEEDED (rc = 0)
+//		WIFI MAC FILTERS:
+//		mode = deny
+//		client count = 1
+//		client list:
+//			1. 22:22:22:22:22:22
+//			2. 00:33:33:33:33:33
+//			3. 00:44:44:44:44:44
+//----------------------------------------------------------
+//	referrer page = 
+//	wait time = 0
+//	submit flag = 0
+-->
+
+
+
+<HTML dir="ltr"><HEAD><TITLE>Wireless MAC Filter</TITLE>
+<meta http-equiv="expires" content="0">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<style fprolloverstyle>
+A:hover {color: #00FFFF}
+.small A:hover {color: #00FFFF}
+</style>
+<SCRIPT src="common.js"></SCRIPT>
+<script type="text/javascript" charset="utf-8" src="/i18n/en_lang_pack.js"></script>
+<SCRIPT language=JavaScript>
+document.title = wlantopmenu.macfilter;
+var win_options = 'alwaysRaised,resizable,scrollbars,width=660,height=460' ;
+var active_win = null;
+var wl_filter_win = null;
+var EN_DIS =  'deny'
+function closeWin(win_var)
+{
+        if ( ((win_var != null) && (win_var.close)) || ((win_var != null) && (win_var.closed==false)) )
+                win_var.close();
+}
+function ViewClient()
+{
+	active_win = self.open('WL_ClientList.asp','ClientTable','alwaysRaised,resizable,scrollbars,width=780,height=370');
+	active_win.focus();
+}
+
+function ValidateMacFilters() 
+{	
+	for(i=0; i < 32; i++) {
+		var elem = document.getElementsByName("m"+i);
+		for(k=i+1; k < 32; k++) {
+			var check = document.getElementsByName("m"+k);
+			if(check[0].value == elem[0].value && check[0].value != "00:00:00:00:00:00") {
+				return false;
+			}		
+		} 
+	}
+
+	return true;
+}
+
+function to_submit(F)
+{
+	if(F.wl_mac_filter[0].checked == true) {
+		if(F.wl_macmode1[0].checked == true)
+			F.wl_macmode.value = "deny";
+		else
+			F.wl_macmode.value = "allow";
+
+		if(!ValidateMacFilters()) {			
+			alert(errmsg.err205);			
+			return;
+		}
+	}
+	else
+		F.wl_macmode.value = "disabled";
+        F.submit_button.value = "Wireless_MAC";
+        F.action.value = "Apply";
+        F.submit();
+}
+
+function SelMac(num,F,isInit)
+{
+	if (!isInit && num == "1") {
+		var msg = (errmsg2.err16 ? errmsg2.err16 : "Enabling MAC filtering will disable WPS.\nDo you want to continue?");
+		if (!confirm(msg)) {
+			F.wl_mac_filter[1].checked = true;
+			return;
+		}
+	}
+	
+	var start = '';
+	var end = '';
+ 	var total = F.elements.length;
+	for(i=0 ; i < total ; i++){
+		if(F.elements[i].name == "start")	start = i;
+		if(F.elements[i].name == "end")		end = i;
+	}
+	if(start == '' || end == '')	return true;
+
+	if(num == "1") {
+		for(i = start; i<=end ;i++)
+			choose_enable(F.elements[i]);
+	}
+	else {
+		for(i = start; i<=end ;i++)
+			choose_disable(F.elements[i]);
+	}
+}
+function valid_macs_all(I)
+{
+	if(I.value == "")
+		return true;
+	else if(I.value.length == 12)
+		valid_macs_12(I);
+	else if(I.value.length == 17)
+		valid_macs_17(I);
+	else{
+                alert(errmsg.err5);
+		I.value = I.defaultValue;
+        }
+}
+function exit()
+{
+        closeWin(active_win);
+}
+
+function init()
+{
+	if('0' == '1') {
+		document.wireless.wl_mac_filter[0].checked = true;
+		SelMac('1',document.wireless, true);
+	}
+	else
+		SelMac('1',document.wireless, true);
+	}
+
+</SCRIPT>
+
+</HEAD>
+<BODY onunload=exit() onload=init()>
+<DIV align=center>
+<FORM method=post name=wireless action=apply.cgi>
+<input type=hidden name=submit_button>
+<input type=hidden name=change_action>
+<input type=hidden name=action>
+<input type=hidden name=wl_macmode>
+<input type=hidden name=wl_maclist value=32>
+<input type=hidden name="wait_time" value="3">
+<TABLE cellSpacing=0 cellPadding=0 width=809 border=0>
+  <TBODY>
+  <TR>
+    <TD width=338 height=57 background=image/UI_Linksys-ltr.gif></TD>
+    <TD vAlign=bottom align=right width=554 bgColor=#2971b9><FONT 
+      style="FONT-SIZE: 7pt" color=#ffffff><FONT face=Arial><script>Capture(share.firmwarever)</script>:&nbsp;1.0.30&nbsp;&nbsp;&nbsp;</FONT></FONT></TD></TR>
+  <TR>
+    <TD width=808 bgColor=#2971b9 colSpan=2><IMG height=11 
+      src="image/UI_10.gif" width=809 border=0></TD></TR></TBODY></TABLE>
+<TABLE height=77 cellSpacing=0 cellPadding=0 width=809 bgColor=#5b5b5b border=0>
+  <TBODY>
+  <TR>
+    <TD 
+    style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-VARIANT: normal" 
+    borderColor=#5b5b5b align=middle width=163 height=49>
+      <H3 style="MARGIN-TOP: 1px; MARGIN-BOTTOM: 1px"><FONT 
+      style="FONT-SIZE: 15pt" face=Arial color=#ffffff><script>Capture(bmenu.wireless)</script></FONT></H3></TD>
+    <TD 
+    style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-VARIANT: normal" 
+    vAlign=center borderColor=#5b5b5b width=646 bgColor=#5b5b5b height=49>
+      <TABLE 
+      style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; BORDER-COLLAPSE: collapse; FONT-VARIANT: normal" 
+      height=33 cellSpacing=0 cellPadding=0 bgColor=#2971b9 border=0>
+        <TBODY>
+        <TR>
+          <TD style="FONT-WEIGHT: bolder; FONT-SIZE: 10pt" align=right 
+          bgColor=#2971b9 height=33><FONT color=#ffffff><script>productname()</script>&nbsp;&nbsp;</FONT></TD>
+          <TD borderColor=#5b5b5b borderColorLight=#5b5b5b align=middle 
+          width=109 bgColor=#5b5b5b borderColorDark=#5b5b5b height=12 
+            rowSpan=2><FONT color=#ffffff><SPAN 
+            style="FONT-SIZE: 8pt"><B>EA3500</B></SPAN></FONT></TD></TR>
+        <TR>
+          <TD 
+          style="FONT-WEIGHT: normal; FONT-SIZE: 1pt; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-VARIANT: normal" 
+          width=646 bgColor=#5b5b5b height=1></TD></TR>
+        <TR>
+          <TD width=646 bgColor=#5b5b5b colSpan=2 height=32>
+            <TABLE id=AutoNumber1 
+            style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; BORDER-COLLAPSE: collapse; FONT-VARIANT: normal" 
+            height=6 cellSpacing=0 cellPadding=0 width=646 border=0>
+              <TBODY>
+				<script>
+					var isParentControlSupported = true;									
+					var activeTier1Link = "/Wireless_Basic.asp";
+					var activeTier2Link = "Wireless_MAC.asp";
+				</script>
+				
+
+<script type="text/javascript">
+	var myLinks = [
+		{ href : "/index.asp" , innerContent : bmenu.setup },
+		{ href : "/Wireless_Basic.asp" , innerContent : bmenu.wireless },
+		{ href : "/Firewall.asp" , innerContent : bmenu.security },
+		{ href : "/Disk_Management.asp" , innerContent : bmenu.storage },			
+		{
+			href : (isParentControlSupported ? "/Parental_Control.asp" : "/Filters.asp"),
+			innerContent : bmenu.accrestriction
+		},
+		{
+			href : '/SingleForward.asp',
+			innerContent : bmenu.applications + '&nbsp;&amp;<BR />&nbsp;&nbsp;&nbsp;' + bmenu.gaming
+		},
+		{ href : "/Management.asp", innerContent : bmenu.admin },
+		{ href : "/Status_Router.asp", innerContent : bmenu.statu }		
+	];
+</script>
+
+<tr height=8 align=middle bgColor=#2971b9 style="border: none; color: #000; font: normal 1pt Arial, Helvetica, sans-serif;">
+	<script type="text/javascript">
+		var markupSrc = '';
+		
+		for (var i=0; i < myLinks.length; i++) {
+			var colWidth = eval("ui_06.w" + (1+i));
+
+			markupSrc += '<td width="' + colWidth + '" height="8" ' +
+				'background="../image/' + ((myLinks[i].href == activeTier1Link) ? 'UI_07.gif' : 'UI_06.gif') + '"></td>';
+		}		
+		document.write(markupSrc);
+	</script>
+</tr>
+
+<tr style="font-weight: 700; color: #FFFFFF" class="topLevelMenu">
+	<script type="text/javascript">
+		
+		var markupSrc = "";
+		
+		for (var i in myLinks) {
+			if (myLinks[i].href == activeTier1Link) {
+				markupSrc += '<td align="middle" bgColor="#2971b9" height="20">' +
+					'  <p style="margin-bottom:4px;">' +
+					     myLinks[i].innerContent +
+					'  </p>' +
+					'</td>';
+			}
+			else {
+				markupSrc += '<td align="middle" bgColor="#5B5B5B" height="20">' +
+					'  <p style="margin-bottom:4px;">' +
+					'    <a style="text-decoration:none;" href="' + myLinks[i].href + '">' + myLinks[i].innerContent + '</a>'+
+					'  </p>' +
+					'</td>';
+			}
+		}		
+		document.write(markupSrc);
+	</script>
+</tr>
+
+
+ 
+				<tr>
+	<td width=643 bgColor=#2971b9 colSpan=8 height=21 style="padding: 3px 0 4px 0px;">
+		<table style="border-color: #000;" height=21 cellSpacing=0 cellPadding=0 >
+			<tbody>
+				<tr class="secondaryNavMenu" align=left>
+
+					<script type="text/javascript">
+	var thisPage = activeTier2Link;
+	var navMarkup = '';
+	
+	var myPages = [];
+	
+	myPages.push({ url : "Wireless_Basic.asp",   displayString : wlantopmenu.settings });
+	myPages.push({ url : "Guest_Access.asp",    displayString : newui.gacs           });
+	myPages.push({ url : "Wireless_MAC.asp",  displayString : wlantopmenu.macfilter });
+	
+
+	for (var i = 0 ; i < myPages.length; i++) {
+		if (i > 0) {
+			navMarkup += '<td align="center" width="1" style="color: #FFFFFF; font: bold 11px Arial;">|</td>';
+		}
+		
+		navMarkup += '<td align="center" class="has-nav-item">' ;
+		
+		if (thisPage == myPages[i].url) {
+			navMarkup += '<span class="selected">' + myPages[i].displayString + '</span>';
+		}
+		else {
+			navMarkup += '<a href="' + myPages[i].url + '" class="small"> ' + myPages[i].displayString + '</a>';
+		}
+		
+		navMarkup += '</td>';
+	}
+
+	navMarkup += '          <td>&nbsp;</td>'; // extra trailing space for symetry.
+	navMarkup += '        </tr>';
+	navMarkup += '    </tbody>';
+	navMarkup += '</table>';
+	
+	document.write(navMarkup);
+	
+					</script>
+				</tr>
+			</tbody>
+		</table>		
+	</td>
+</tr>
+
+
+
+              </TBODY>
+            </TABLE></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE height=5 cellSpacing=0 cellPadding=0 width=806 bgColor=black border=0>
+  <TBODY>
+  <TR>
+    <TD borderColor=#e7e7e7 width=163 bgColor=#e7e7e7 height=1><IMG height=15 
+      src="image/UI_03-ltr.gif" width=164 border=0></TD>
+    <TD width=646 height=1><IMG height=15 src="image/UI_02.gif" width=645 border=0></TD></TR></TBODY></TABLE>
+<TABLE id=AutoNumber9 style="BORDER-COLLAPSE: collapse" borderColor=#111111 
+height=23 cellSpacing=0 cellPadding=0 width=809 border=0>
+  <TBODY>
+  <TR>
+    <TD width=633>
+      <TABLE cellSpacing=0 cellPadding=0 border=0 width="633">
+		<col width=156 />
+		<col width=8 />
+		<col width=21 />									
+		<col width=156 />
+		<col width=277 />
+		<col width=15 style="border-right:none;" />
+        <TBODY>
+        <TR>
+          <TD width=156 bgColor=#5b5b5b height=25>
+            <P align=right><B>
+                <font face="Arial" color="#FFFFFF" style="font-size: 9pt">
+                <script>Capture(wlantopmenu.macfilter)</script></font></B></P></TD>
+          <TD width=8 bgColor=#5b5b5b height=25>&nbsp;</TD>
+          <TD width=21>&nbsp;</TD>
+          <TD width=156>&nbsp;</TD>
+          <TD width=277>&nbsp;</TD>
+          <TD width=15 background=image/UI_05-ltr.gif>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;</TD>
+          <TD width=433 height=25 colspan=2><INPUT onClick=SelMac(1,this.form) type=radio value=1 name=wl_mac_filter checked><B><script>Capture(share.enabled)</script></B>&nbsp; 
+	<INPUT onClick=SelMac(0,this.form) type=radio value=0 name=wl_mac_filter ><B><script>Capture(share.disabled)</script></B>
+          </TD>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;</TD>
+          <TD width=433 height=25 colspan=2>
+	   <TABLE>
+	   <TD width=418><HR color=#b5b5e6 SIZE=1></TD>
+	   <TD>&nbsp;</TD>
+	   </TABLE>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25><B><script>Capture(wlanfilter.accrest)</script></B>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;<input type=hidden name=start></TD>
+          <TD width=433 height=25 colspan=2><INPUT type=radio value="deny" name="wl_macmode1" checked><script>Capture(wlanfilter.pclist1)</script></TD>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;</TD>
+          <TD width=433 height=25 colspan=2><INPUT type=radio value="allow" name="wl_macmode1" ><b><script>Capture(wlanfilter.permitonly)</script></b> <script>Capture(wlanfilter.pclisttoaccbl)</script></TD>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;</TD>
+          <TD width=433 height=25 colspan=2>
+	   <TABLE>
+	   <TD width=45>&nbsp;</TD>
+	   <TD width=340><HR color=#b5b5e6 SIZE=1></TD>
+	   <TD>&nbsp;</TD>
+	   </TABLE>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=40><B><script>Capture(wlanfilter.macfilterlist)</script></B>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=40>&nbsp;</TD>
+          <TD height=40 >&nbsp;</TD>
+          <TD width=433 height=40 colspan=2><script>document.write("<INPUT  type=button onclick=ViewClient() name=list_button value='&nbsp;" + wlanbutton.clilist + "'>");</script></TD>
+          <TD width=15 background=image/UI_05-ltr.gif height=40>&nbsp;</TD></TR>
+         <TR>
+          <TD align=right width=156 bgColor=#e7e7e7 height=25>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif height=25>&nbsp;</TD>
+          <TD height=25 >&nbsp;</TD>
+          <TD width=433 height=25 colspan=2>
+		<script>
+		var i;
+		var num1;
+		var num2;
+		var wl_maclist = "22:22:22:22:22:22";
+		var wl_activelist = "";
+		var wl_active_add_mac = '0';
+		var mac1;
+		var mac2;
+		if(wl_activelist != "")
+			var MAC = wl_activelist.split(' ');
+		else
+			var MAC = wl_maclist.split(' ');
+		for(i=1;i<=16;i++) {
+			num1 = i;
+			num2 = parseInt(i)+16;
+
+			if(!MAC[(num1-1)])
+				mac1 = "00:00:00:00:00:00";
+			else
+				mac1 = MAC[(num1-1)];
+			
+			if(!MAC[(num2-1)])
+				mac2 = "00:00:00:00:00:00";
+			else
+				mac2 = MAC[(num2-1)];
+
+			if(num1 < 10) { num1 = "0"+num1 };
+			document.write("MAC "+num1+":&nbsp;&nbsp;&nbsp;<INPUT class=num maxLength=17 onBlur=valid_macs_all(this) size=15 value="+mac1+" name=m"+(num1-1)+">&nbsp;&nbsp;&nbsp;&nbsp;");
+			document.write("MAC "+num2+":&nbsp;&nbsp;&nbsp;<INPUT class=num maxLength=17 onBlur=valid_macs_all(this) size=15 value="+mac2+" name=m"+(num2-1)+"><br>");
+		}
+
+		</script>
+		<input type=hidden name=end>
+	  </TD>
+          <TD width=15 background=image/UI_05-ltr.gif height=25>&nbsp;</TD></TR>
+
+	<TR>
+          <TD bgColor=#e7e7e7></TD>
+          <TD background=image/UI_04-ltr.gif></TD>
+          <TD></TD>
+          <TD></TD>
+          <TD></TD>
+          <TD background=image/UI_05-ltr.gif></TD>
+        </TR>
+
+        </TBODY></TABLE></TD>
+    <TD vAlign=top width=176 bgColor=#2971b9>
+      <TABLE cellSpacing=0 cellPadding=0 width=176 border=0>
+        <TBODY>
+        <TR>
+          <TD width=11 bgColor=#2971b9 height=25>&nbsp;</TD>
+          <TD width=156 bgColor=#2971b9 height=25><font color="#FFFFFF"><span style="font-family: Arial">
+<script>
+document.write("<br><br><b><font color=\"white\" face=\"Arial\" style=\"font-size: 9pt\"><a class=AU target=_blank href=en_help/Wireless_MAC_Filter.asp>"+share.help+"...</a></font></b>");
+</script>
+
+</span></font></TD>
+          <TD width=9 bgColor=#2971b9 
+  height=25>&nbsp;</TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD width=809 colSpan=2>
+      <TABLE cellSpacing=0 cellPadding=0 border=0>
+        <TBODY>
+        <TR>
+          <TD width=154 bgColor=#e7e7e7 height=30>&nbsp;</TD>
+          <TD width=8 background=image/UI_04-ltr.gif>&nbsp;</TD>
+          <TD width=454>&nbsp;</TD>
+	<TD width=191 bgColor=#2971b9 rowSpan=2 background=image/UI_Cisco-ltr.gif></TD>
+	</TR>
+        <TR>
+          <TD width=156 bgColor=#5b5b5b height=33>&nbsp;</TD>
+          <TD width=8 bgColor=#5b5b5b>&nbsp;</TD>
+          <TD width=454 bgColor=#2971b9 align=right>
+	  <TABLE>
+                <TR>
+                <TD width=101 bgcolor=#175592 align=center height=20><font color=#FFFFFF style="font-size: 8pt; font-weight: 700" face="Arial"><A href="javascript:to_submit(document.wireless)"><script>Capture(sbutton.save)</script></A></font></TD>
+                <TD width=8>nbsp;</TD>
+                <TD width=103 bgcolor=#175592 align=center><font color=#FFFFFF style="font-size: 8pt; font-weight: 700" face="Arial"><A href="javascript:location.replace('Wireless_MAC.asp')"><script>Capture(sbutton.cancel)</script></A></font></TD>
+                <TD width=16>&nbsp;</TD>
+                </TR>
+          </TABLE>
+          </TD>
+</TR></TBODY></TABLE></TD></TR></TBODY></TABLE></FORM></DIV></BODY></HTML>
+
+<script>
+function addLoadEvent(func) {
+var oldonload = window.onload;
+if (typeof window.onload != 'function') {
+window.onload = func;
+} else {
+window.onload = function() {
+if (oldonload) {
+oldonload();
+}
+func();
+}
+}
+}
+addLoadEvent(function() {
+var bridge_mode = 'off';
+if (bridge_mode == 'dhcp' || bridge_mode == 'static') {
+var anchor_tags = document.getElementsByTagName('a');
+for (var i = 0; i < anchor_tags.length; i++) {
+var href = anchor_tags[i].getAttribute('href');
+if (href) {
+if (/storage\/Disk_Management.asp$/.test(href) ||
+/IPv6.asp$/.test(href) ||
+/DDNS.asp$/.test(href) ||
+/WanMAC.asp$/.test(href) ||
+/Routing.asp$/.test(href) ||
+/Firewall.asp$/.test(href) ||
+/VPN.asp$/.test(href) ||
+/Filters.asp$/.test(href) ||
+/SingleForward.asp$/.test(href) ||
+/Forward.asp$/.test(href) ||
+/Triggering.asp$/.test(href) ||
+/DMZ.asp$/.test(href) ||
+/QoS.asp$/.test(href) ||
+/Parental_Control.asp$/.test(href) ||
+/Log.asp$/.test(href))
+{
+anchor_tags[i].removeAttribute('href');
+anchor_tags[i].style.color='gray';
+}
+}
+}
+}
+else {
+}
+});
+</script>

@@ -1,0 +1,14 @@
+{% include "page_head.html" %}
+
+<body>
+  <div id="main">
+	<h1>Login</h1>
+	{{ message }}
+	<form action="login" method="post">
+	  <p><input type="text" name="user"/></p>
+	  <p><input type="submit" value="Login"/></p>
+	</form>
+  </div>
+
+{% include "page_end.html" %}
+

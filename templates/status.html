@@ -1,0 +1,28 @@
+{% include "page_head.html" %}
+
+<p>{{ message }}</p>
+
+<h1>Clients</h1>
+<ul>
+{% for client in clients %}
+    <li>{{ client['friendly_name'] }} is connected at 
+	    {{ client['ip_address'] }}</li>
+{% else %}
+    <li>No client information available.</li>
+{% endfor %}
+</ul>
+
+<h1>MAC Blacklist</h1>
+<ul>
+{% for filter in mac_filters %}
+    <li>{{ filter }}</li>
+{% else %}
+    <li>Mac filter list is empty or unavailable.</li>
+{% endfor %}
+</ul>
+
+<p><a href="command_menu">Command Menu (Do some evil!)</a></p>
+
+<p><a href="logoff">Log Off</a></p>
+
+{% include "page_end.html" %}

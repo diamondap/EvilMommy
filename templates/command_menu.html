@@ -1,0 +1,29 @@
+{% include "page_head.html" %}
+
+<body>
+  <div id="main">
+	<form action="run_command" method="post">
+	  <p>Evil Mommy wants to...</p> 
+
+	  <p>
+		<select name="command" id="command">
+		  <option value="disconnect" 
+				  selected="selected">disconnect</option>
+		  <option value="reconnect">reconnect</option>
+		</select>
+	  </p>
+		
+	  <p>
+		<select name="device" id="device">
+		</select>
+	  </p>
+
+	  <p><input type="submit" id="btnSubmit" value="Do my evil bidding!"/></p>
+
+	  <p id="bePatient" style="display:none">
+		This should take about 10 seconds...
+	  </p>
+	</form>
+  </div>
+
+{% include "page_end.html" %}
